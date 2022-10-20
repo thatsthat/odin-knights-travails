@@ -14,140 +14,66 @@ const Position = (
 
 const Path = (startPos, endPos) => {
   const rootNode = Position(startPos);
-  const finalRoot = nextMoves(rootNode, 0, endPos);
+  let posBuffer = [];
 
-  return { finalRoot };
+  posBuffer.push(rootNode);
+  nextMoves();
 
-  function nextMoves(inpNode, depth, endPos) {
-    console.log(inpNode.pos, depth);
-    const outNode = inpNode;
-    const LU = [inpNode.pos[0] - 2, inpNode.pos[1] + 1];
-    const LD = [inpNode.pos[0] - 2, inpNode.pos[1] - 1];
-    const UL = [inpNode.pos[0] - 1, inpNode.pos[1] + 2];
-    const UR = [inpNode.pos[0] + 1, inpNode.pos[1] + 2];
-    const RU = [inpNode.pos[0] + 2, inpNode.pos[1] + 1];
-    const RD = [inpNode.pos[0] + 2, inpNode.pos[1] - 1];
-    const DL = [inpNode.pos[0] - 1, inpNode.pos[1] - 2];
-    const DR = [inpNode.pos[0] + 1, inpNode.pos[1] - 2];
+  return { rootNode };
+
+  function nextMoves() {
+    const currNode = posBuffer.shift();
+    console.log(currNode.pos);
+    // Exit if final position is reached
+    if (currNode.pos[0] == endPos[0] && currNode.pos[1] == endPos[1]) {
+      return;
+    }
+
+    const LU = [currNode.pos[0] - 2, currNode.pos[1] + 1];
+    const LD = [currNode.pos[0] - 2, currNode.pos[1] - 1];
+    const UL = [currNode.pos[0] - 1, currNode.pos[1] + 2];
+    const UR = [currNode.pos[0] + 1, currNode.pos[1] + 2];
+    const RU = [currNode.pos[0] + 2, currNode.pos[1] + 1];
+    const RD = [currNode.pos[0] + 2, currNode.pos[1] - 1];
+    const DL = [currNode.pos[0] - 1, currNode.pos[1] - 2];
+    const DR = [currNode.pos[0] + 1, currNode.pos[1] - 2];
 
     const insideBoard = (v) => {
       return v >= 0 && v < 8;
     };
     if (LU.every(insideBoard)) {
-      if (LU == endPos) {
-        outNode.LU = Position(LU);
-        //console.log("1");
-      } else {
-        // console.log("11");
-        outNode.LU = Position(LU, nextMoves(Position(LU), depth + 1, endPos));
-      }
+      currNode.LU = Position(LU);
+      posBuffer.push(currNode.LU);
     }
     if (LD.every(insideBoard)) {
-      if (LD == endPos) {
-        outNode.LD = Position(LD);
-        //console.log("2");
-      } else {
-        // console.log("22");
-        outNode.LD = Position(
-          LD,
-          null,
-          nextMoves(Position(LD), depth + 1, endPos)
-        );
-      }
+      currNode.LD = Position(LD);
+      posBuffer.push(currNode.LD);
     }
     if (UL.every(insideBoard)) {
-      if (UL == endPos) {
-        outNode.UL = Position(UL);
-        //console.log("3");
-      } else {
-        // console.log("33");
-        outNode.UL = Position(
-          UL,
-          null,
-          null,
-          nextMoves(Position(UL), depth + 1, endPos)
-        );
-      }
+      currNode.UL = Position(UL);
+      posBuffer.push(currNode.UL);
     }
     if (UR.every(insideBoard)) {
-      if (UR == endPos) {
-        outNode.UR = Position(UR);
-        //console.log("4");
-      } else {
-        // console.log("44");
-        outNode.UR = Position(
-          UR,
-          null,
-          null,
-          null,
-          nextMoves(Position(UR), depth + 1, endPos)
-        );
-      }
+      currNode.UR = Position(UR);
+      posBuffer.push(currNode.UR);
     }
     if (RU.every(insideBoard)) {
-      if (RU == endPos) {
-        outNode.RU = Position(RU);
-        //console.log("5");
-      } else {
-        // console.log("55");
-        outNode.RU = Position(
-          RU,
-          null,
-          null,
-          null,
-          null,
-          nextMoves(Position(RU), depth + 1, endPos)
-        );
-      }
+      currNode.RU = Position(RU);
+      posBuffer.push(currNode.RU);
     }
     if (RD.every(insideBoard)) {
-      inpNode.RD = Position(RD);
-      if (RD == endPos) {
-        outNode.RD = Position(RD);
-        //console.log("6");
-      } else {
-        // console.log("66");
-        outNode.RD = Position(RD, null, null);
-        null, null, null, nextMoves(Position(RD), depth + 1, endPos);
-      }
+      currNode.RD = Position(RD);
+      posBuffer.push(currNode.RD);
     }
     if (DL.every(insideBoard)) {
-      if (DL == endPos) {
-        outNode.DL = Position(DL);
-        //console.log("7");
-      } else {
-        // console.log("77");
-        outNode.DL = Position(
-          DL,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          nextMoves(Position(DL), depth + 1, endPos)
-        );
-      }
+      currNode.DL = Position(DL);
+      posBuffer.push(currNode.DL);
     }
     if (DR.every(insideBoard)) {
-      if (DR == endPos) {
-        outNode.DR = Position(DR);
-        //console.log("8");
-      } else {
-        // console.log("88");
-        outNode.DR = Position(
-          DR,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          nextMoves(Position(DR), depth + 1, endPos)
-        );
-      }
+      currNode.DR = Position(DR);
+      posBuffer.push(currNode.DR);
     }
-    return outNode;
+    nextMoves();
   }
 };
 const iep = Path([0, 0], [5, 5]);
