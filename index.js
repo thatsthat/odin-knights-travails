@@ -15,15 +15,16 @@ const Position = (
 const Path = (startPos, endPos) => {
   const rootNode = Position(startPos);
   let posBuffer = [];
+  let knightPath = [];
 
   posBuffer.push(rootNode);
   nextMoves();
 
-  return { rootNode };
+  return knightPath.length;
 
   function nextMoves() {
     const currNode = posBuffer.shift();
-    console.log(currNode.pos);
+    knightPath.push(currNode.pos);
     // Exit if final position is reached
     if (currNode.pos[0] == endPos[0] && currNode.pos[1] == endPos[1]) {
       return;
@@ -76,5 +77,5 @@ const Path = (startPos, endPos) => {
     nextMoves();
   }
 };
-const iep = Path([0, 0], [5, 5]);
+const iep = Path([0, 0], [7, 7]);
 console.log(JSON.stringify(iep));
