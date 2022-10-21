@@ -86,6 +86,14 @@ const Path = (startPos, endPos) => {
   }
 };
 const args = process.argv;
-const kPath = Path(JSON.parse(args[2]), JSON.parse(args[3]));
-console.log(`You made it in ${kPath.length - 1} moves!  Here's your path:`);
-kPath.forEach((v) => console.log(v));
+if (
+  JSON.parse(args[2])
+    .concat(JSON.parse(args[3]))
+    .some((v) => v > 7)
+) {
+  console.log("invalid coordinates");
+} else {
+  const kPath = Path(JSON.parse(args[2]), JSON.parse(args[3]));
+  console.log(`You made it in ${kPath.length - 1} moves!  Here's your path:`);
+  kPath.forEach((v) => console.log(v));
+}
