@@ -1,5 +1,6 @@
 const Position = (
   pos,
+  parent = null,
   LU = null,
   LD = null,
   UL = null,
@@ -9,7 +10,7 @@ const Position = (
   DL = null,
   DR = null
 ) => {
-  return { pos, LU, LD, UL, UR, RU, RD, DL, DR };
+  return { pos, parent, LU, LD, UL, UR, RU, RD, DL, DR };
 };
 
 const Path = (startPos, endPos) => {
@@ -20,13 +21,20 @@ const Path = (startPos, endPos) => {
   posBuffer.push(rootNode);
   nextMoves();
 
-  return knightPath.length;
+  return knightPath;
+
+  function getPath(inpNode) {
+    knightPath.unshift(inpNode.pos);
+    if (inpNode.parent !== null) {
+      getPath(inpNode.parent);
+    }
+  }
 
   function nextMoves() {
     const currNode = posBuffer.shift();
-    knightPath.push(currNode.pos);
     // Exit if final position is reached
     if (currNode.pos[0] == endPos[0] && currNode.pos[1] == endPos[1]) {
+      getPath(currNode);
       return;
     }
 
@@ -43,39 +51,41 @@ const Path = (startPos, endPos) => {
       return v >= 0 && v < 8;
     };
     if (LU.every(insideBoard)) {
-      currNode.LU = Position(LU);
+      currNode.LU = Position(LU, currNode);
       posBuffer.push(currNode.LU);
     }
     if (LD.every(insideBoard)) {
-      currNode.LD = Position(LD);
+      currNode.LD = Position(LD, currNode);
       posBuffer.push(currNode.LD);
     }
     if (UL.every(insideBoard)) {
-      currNode.UL = Position(UL);
+      currNode.UL = Position(UL, currNode);
       posBuffer.push(currNode.UL);
     }
     if (UR.every(insideBoard)) {
-      currNode.UR = Position(UR);
+      currNode.UR = Position(UR, currNode);
       posBuffer.push(currNode.UR);
     }
     if (RU.every(insideBoard)) {
-      currNode.RU = Position(RU);
+      currNode.RU = Position(RU, currNode);
       posBuffer.push(currNode.RU);
     }
     if (RD.every(insideBoard)) {
-      currNode.RD = Position(RD);
+      currNode.RD = Position(RD, currNode);
       posBuffer.push(currNode.RD);
     }
     if (DL.every(insideBoard)) {
-      currNode.DL = Position(DL);
+      currNode.DL = Position(DL, currNode);
       posBuffer.push(currNode.DL);
     }
     if (DR.every(insideBoard)) {
-      currNode.DR = Position(DR);
+      currNode.DR = Position(DR, currNode);
       posBuffer.push(currNode.DR);
     }
     nextMoves();
   }
 };
-const iep = Path([0, 0], [7, 7]);
-console.log(JSON.stringify(iep));
+const args = process.argv;
+const kPath = Path(JSON.parse(args[2]), JSON.parse(args[3]));
+console.log(`You made it in ${kPath.length - 1} moves!  Here's your path:`);
+kPath.forEach((v) => console.log(v));
